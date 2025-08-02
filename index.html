@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的第一个部署项目</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="images/logo.svg" alt="Logo" id="logo">
+                <h1>我的网站</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#gallery">图片展示</a></li>
+                <li><a href="#interactive">交互区域</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 首页区域 -->
+        <section id="home" class="section">
+            <div class="hero">
+                <h2>欢迎来到我的第一个部署项目</h2>
+                <p>这是一个学习网站部署的示例项目，包含图片展示和简单交互功能。</p>
+                <button id="welcomeBtn" class="btn-primary">点击开始探索</button>
+            </div>
+        </section>
+
+        <!-- 图片展示区域 -->
+        <section id="gallery" class="section">
+            <h2>图片展示</h2>
+            <div class="gallery-container">
+                <div class="image-card">
+                    <img src="images/sample1.svg" alt="示例图片1" class="gallery-img">
+                    <div class="image-info">
+                        <h3>美丽风景</h3>
+                        <p>这是一张示例图片</p>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <img src="images/sample2.svg" alt="示例图片2" class="gallery-img">
+                    <div class="image-info">
+                        <h3>城市夜景</h3>
+                        <p>展示城市的美丽夜景</p>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <img src="images/sample3.svg" alt="示例图片3" class="gallery-img">
+                    <div class="image-info">
+                        <h3>自然风光</h3>
+                        <p>大自然的美丽景色</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 交互区域 -->
+        <section id="interactive" class="section">
+            <h2>交互功能演示</h2>
+            
+            <!-- 主题切换 -->
+            <div class="feature-box">
+                <h3>主题切换</h3>
+                <button id="themeToggle" class="btn-secondary">切换到暗色主题</button>
+            </div>
+
+            <!-- 计数器 -->
+            <div class="feature-box">
+                <h3>计数器</h3>
+                <div class="counter-container">
+                    <button id="decreaseBtn" class="btn-small">-</button>
+                    <span id="counter">0</span>
+                    <button id="increaseBtn" class="btn-small">+</button>
+                </div>
+            </div>
+
+            <!-- 文字输入和显示 -->
+            <div class="feature-box">
+                <h3>实时文字显示</h3>
+                <input type="text" id="textInput" placeholder="输入一些文字...">
+                <div id="textDisplay">您输入的文字将在这里显示</div>
+            </div>
+
+            <!-- 颜色选择器 -->
+            <div class="feature-box">
+                <h3>背景颜色</h3>
+                <input type="color" id="colorPicker" value="#ffffff">
+                <button id="resetColor" class="btn-small">重置</button>
+            </div>
+
+            <!-- 图片轮播控制 -->
+            <div class="feature-box">
+                <h3>图片轮播</h3>
+                <div class="slideshow-container">
+                    <img id="slideshowImg" src="images/sample1.svg" alt="轮播图片">
+                    <div class="slideshow-controls">
+                        <button id="prevBtn" class="btn-small">上一张</button>
+                        <span id="slideCounter">1 / 3</span>
+                        <button id="nextBtn" class="btn-small">下一张</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 我的第一个部署项目 - 学习网站部署流程</p>
+        <p>当前时间: <span id="currentTime"></span></p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
