@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 获取所有需要的元素
     const langToggle = document.getElementById('langToggle');
-    const currentTime = document.getElementById('currentTime');
 
     // 全局变量
     let currentLang = 'zh'; // 默认中文
@@ -137,24 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 实时时间显示
-    function updateTime() {
-        const now = new Date();
-        const locale = currentLang === 'zh' ? 'zh-CN' : 'en-US';
-        const timeString = now.toLocaleString(locale, {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        currentTime.textContent = timeString;
-    }
 
-    // 每秒更新时间
-    updateTime();
-    setInterval(updateTime, 1000);
 
     // 页面滚动效果
     let lastScrollTop = 0;
