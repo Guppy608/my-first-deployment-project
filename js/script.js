@@ -1,171 +1,79 @@
 // 等待DOM加载完成
 document.addEventListener('DOMContentLoaded', function() {
-    
+
     // 获取所有需要的元素
-    const welcomeBtn = document.getElementById('welcomeBtn');
-    const themeToggle = document.getElementById('themeToggle');
-    const decreaseBtn = document.getElementById('decreaseBtn');
-    const increaseBtn = document.getElementById('increaseBtn');
-    const counter = document.getElementById('counter');
-    const textInput = document.getElementById('textInput');
-    const textDisplay = document.getElementById('textDisplay');
-    const colorPicker = document.getElementById('colorPicker');
-    const resetColor = document.getElementById('resetColor');
-    const slideshowImg = document.getElementById('slideshowImg');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const slideCounter = document.getElementById('slideCounter');
+    const langToggle = document.getElementById('langToggle');
     const currentTime = document.getElementById('currentTime');
 
     // 全局变量
-    let count = 0;
-    let currentSlide = 0;
-    const slideImages = [
-        'images/sample1.svg',
-        'images/sample2.svg',
-        'images/sample3.svg'
-    ];
+    let currentLang = 'zh'; // 默认中文
 
-    // 欢迎按钮点击事件
-    welcomeBtn.addEventListener('click', function() {
-        alert('欢迎来到我的网站！这是一个部署学习项目。');
-        this.style.transform = 'scale(0.95)';
+    // 语言切换功能
+    function switchLanguage() {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+
+        // 更新按钮文字
+        langToggle.textContent = currentLang === 'zh' ? 'EN' : '中文';
+
+        // 更新页面语言属性
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+
+        // 更新所有带有语言属性的元素
+        const elementsWithLang = document.querySelectorAll('[data-zh][data-en]');
+        elementsWithLang.forEach(element => {
+            const text = currentLang === 'zh' ? element.getAttribute('data-zh') : element.getAttribute('data-en');
+            if (element.tagName === 'INPUT') {
+                element.placeholder = text;
+            } else {
+                element.innerHTML = text;
+            }
+        });
+
+        // 保存语言设置到本地存储
+        localStorage.setItem('language', currentLang);
+
+        // 添加切换动画效果
+        document.body.style.opacity = '0.8';
         setTimeout(() => {
-            this.style.transform = 'scale(1)';
-        }, 150);
-    });
+            document.body.style.opacity = '1';
+        }, 200);
+    }
 
-    // 主题切换功能
-    themeToggle.addEventListener('click', function() {
+    // 语言切换按钮事件
+    langToggle.addEventListener('click', switchLanguage);
+
+    // 页面加载时恢复语言设置
+    const savedLang = localStorage.getItem('language');
+    if (savedLang && savedLang !== currentLang) {
+        switchLanguage();
+    }
+
+    // 主题切换功能（保留但简化）
+    function toggleTheme() {
         document.body.classList.toggle('dark-theme');
-        
-        if (document.body.classList.contains('dark-theme')) {
-            this.textContent = '切换到亮色主题';
-            localStorage.setItem('theme', 'dark');
-        } else {
-            this.textContent = '切换到暗色主题';
-            localStorage.setItem('theme', 'light');
-        }
-    });
+        const isDark = document.body.classList.contains('dark-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
 
     // 页面加载时恢复主题设置
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
-        themeToggle.textContent = '切换到亮色主题';
     }
 
-    // 计数器功能
-    function updateCounter() {
-        counter.textContent = count;
-        counter.style.transform = 'scale(1.2)';
-        setTimeout(() => {
-            counter.style.transform = 'scale(1)';
-        }, 200);
-    }
-
-    decreaseBtn.addEventListener('click', function() {
-        count--;
-        updateCounter();
-    });
-
-    increaseBtn.addEventListener('click', function() {
-        count++;
-        updateCounter();
-    });
-
-    // 实时文字显示
-    textInput.addEventListener('input', function() {
-        const inputText = this.value;
-        if (inputText.trim() === '') {
-            textDisplay.textContent = '您输入的文字将在这里显示';
-            textDisplay.style.fontStyle = 'italic';
-            textDisplay.style.color = '#999';
-        } else {
-            textDisplay.textContent = inputText;
-            textDisplay.style.fontStyle = 'normal';
-            textDisplay.style.color = '#333';
+    // 添加键盘快捷键
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + D 切换主题
+        if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+            e.preventDefault();
+            toggleTheme();
+        }
+        // Ctrl/Cmd + L 切换语言
+        if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+            e.preventDefault();
+            switchLanguage();
         }
     });
-
-    // 颜色选择器
-    colorPicker.addEventListener('change', function() {
-        const selectedColor = this.value;
-        document.body.style.backgroundColor = selectedColor;
-        
-        // 如果选择了深色，自动调整文字颜色
-        const rgb = hexToRgb(selectedColor);
-        const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-        
-        if (brightness < 128) {
-            document.body.style.color = '#ffffff';
-        } else {
-            document.body.style.color = '#333333';
-        }
-    });
-
-    // 重置颜色
-    resetColor.addEventListener('click', function() {
-        document.body.style.backgroundColor = '';
-        document.body.style.color = '';
-        colorPicker.value = '#ffffff';
-    });
-
-    // 颜色转换函数
-    function hexToRgb(hex) {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
-
-    // 图片轮播功能
-    function updateSlideshow() {
-        slideshowImg.src = slideImages[currentSlide];
-        slideCounter.textContent = `${currentSlide + 1} / ${slideImages.length}`;
-        
-        // 添加淡入效果
-        slideshowImg.style.opacity = '0';
-        setTimeout(() => {
-            slideshowImg.style.opacity = '1';
-        }, 100);
-    }
-
-    prevBtn.addEventListener('click', function() {
-        currentSlide = (currentSlide - 1 + slideImages.length) % slideImages.length;
-        updateSlideshow();
-    });
-
-    nextBtn.addEventListener('click', function() {
-        currentSlide = (currentSlide + 1) % slideImages.length;
-        updateSlideshow();
-    });
-
-    // 自动轮播（可选）
-    setInterval(function() {
-        currentSlide = (currentSlide + 1) % slideImages.length;
-        updateSlideshow();
-    }, 5000); // 每5秒自动切换
-
-    // 实时时间显示
-    function updateTime() {
-        const now = new Date();
-        const timeString = now.toLocaleString('zh-CN', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        currentTime.textContent = timeString;
-    }
-
-    // 每秒更新时间
-    updateTime();
-    setInterval(updateTime, 1000);
 
     // 平滑滚动到锚点
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -181,17 +89,124 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // 技能标签悬停效果
+    document.querySelectorAll('.skill-tag').forEach(tag => {
+        tag.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+        });
+
+        tag.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // 成就卡片点击效果
+    document.querySelectorAll('.achievement-card').forEach(card => {
+        card.addEventListener('click', function() {
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
+
+    // 联系链接点击统计（可选）
+    document.querySelectorAll('.contact-link').forEach(link => {
+        link.addEventListener('click', function() {
+            const linkType = this.classList.contains('github') ? 'GitHub' :
+                           this.classList.contains('zhihu') ? 'Zhihu' : 'Discussion';
+            console.log(`🔗 用户点击了 ${linkType} 链接`);
+        });
+    });
+
+    // 头像点击彩蛋
+    const avatar = document.querySelector('.avatar-img');
+    if (avatar) {
+        let clickCount = 0;
+        avatar.addEventListener('click', function() {
+            clickCount++;
+            this.style.transform = 'scale(0.9) rotate(10deg)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1) rotate(0deg)';
+            }, 200);
+
+            if (clickCount === 5) {
+                alert(currentLang === 'zh' ? '🐱 你发现了一个彩蛋！Guppy喜欢POP Cat！' : '🐱 You found an easter egg! Guppy loves POP Cat!');
+                clickCount = 0;
+            }
+        });
+    }
+
+    // 实时时间显示
+    function updateTime() {
+        const now = new Date();
+        const locale = currentLang === 'zh' ? 'zh-CN' : 'en-US';
+        const timeString = now.toLocaleString(locale, {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        currentTime.textContent = timeString;
+    }
+
+    // 每秒更新时间
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // 页面滚动效果
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const header = document.querySelector('header');
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // 向下滚动，隐藏导航栏
+            header.style.transform = 'translateY(-100%)';
+        } else {
+            // 向上滚动，显示导航栏
+            header.style.transform = 'translateY(0)';
+        }
+        lastScrollTop = scrollTop;
+    });
+
+    // 元素进入视口动画
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // 观察所有卡片元素
+    document.querySelectorAll('.about-card, .achievement-card, .timeline-item, .skill-category').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+
     // 图片加载错误处理
     document.querySelectorAll('img').forEach(img => {
         img.addEventListener('error', function() {
-            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWbvueJh+acquWKoOi9veWksei0pTwvdGV4dD48L3N2Zz4=';
-            this.alt = '图片加载失败';
+            console.warn('图片加载失败:', this.src);
+            // 可以设置默认图片或隐藏
         });
     });
 
     // 页面加载完成提示
-    console.log('🎉 页面加载完成！所有交互功能已就绪。');
-    console.log('📱 这是一个学习部署的示例项目');
-    console.log('🌐 即将部署到 Netlify');
+    console.log('🎉 Guppy的个人网站加载完成！');
+    console.log('🌐 支持中英文切换');
+    console.log('⌨️ 快捷键: Ctrl+L (切换语言), Ctrl+D (切换主题)');
+    console.log('🐱 点击头像5次有彩蛋哦！');
 
 });
